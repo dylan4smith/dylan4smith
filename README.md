@@ -1,4 +1,4 @@
-# Hi there, I'm [Your Name] 👋
+# Hi there, I'm Dylan 👋
 
 ## 📊 Data Analyst | Aspiring Data Scientist | Python Enthusiast
 
