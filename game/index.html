@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Cryptid Crawlers</title>
+  <meta name="description" content="Collect, merge, and evolve monsters in this roguelike auto-battler dungeon adventure!">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="game-wrapper">
+
+  <!-- ── TITLE SCREEN ───────────────────────────────────────── -->
+  <div id="screen-title" class="screen">
+    <div class="title-bg"></div>
+    <div class="title-content">
+      <div class="title-logo">
+        <div class="title-emoji-row">🦇 👁️ 🐲 🍄 ⚡ 👼 🌳 ☠️</div>
+        <h1 class="game-title">CRYPTID<br>CRAWLERS</h1>
+        <p class="tagline">Collect &bull; Evolve &bull; Conquer</p>
+      </div>
+      <div class="title-buttons">
+        <button class="btn btn-primary btn-hero" id="btn-play">▶ Play</button>
+        <button class="btn btn-secondary" id="btn-codex">📖 Codex</button>
+        <button class="btn btn-ghost" id="btn-how-to-play">❓ How to Play</button>
+      </div>
+      <div id="title-stats" class="title-stats"></div>
+    </div>
+  </div>
+
+  <!-- ── HOW TO PLAY ────────────────────────────────────────── -->
+  <div id="screen-howto" class="screen">
+    <div class="screen-header">
+      <button class="btn btn-back" id="btn-howto-back">← Back</button>
+      <h2>How to Play</h2>
+      <div></div>
+    </div>
+    <div class="howto-content">
+      <div class="howto-step">
+        <div class="howto-icon">🛒</div>
+        <div>
+          <h3>1. Shop for Monsters</h3>
+          <p>Each floor, spend 💰 gold to recruit Cryptid monsters from the market. Sell unwanted ones for 1💰 or reroll the shop for 2💰.</p>
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-icon">⭐</div>
+        <div>
+          <h3>2. Merge to Evolve</h3>
+          <p>Collect 3 of the same monster to automatically merge them into a stronger version with a ⭐ tier bonus. Higher tiers have massively increased stats!</p>
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-icon">⚔️</div>
+        <div>
+          <h3>3. Watch Auto-Battles</h3>
+          <p>Your monsters fight automatically based on Speed and abilities. The order matters — your team fights from front to back. Use the battle log to understand what happened.</p>
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-icon">🃏</div>
+        <div>
+          <h3>4. Draft Upgrades</h3>
+          <p>Win a battle and choose one of three upgrade cards. Cards can boost all monsters, grant new abilities, or change the rules of combat. Choose wisely!</p>
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="howto-icon">📖</div>
+        <div>
+          <h3>5. Build the Codex</h3>
+          <p>Earn ✨ Essence from every run. Spend it in the Codex to permanently unlock new advantages that carry over between runs.</p>
+        </div>
+      </div>
+      <div class="howto-tip">
+        <strong>⚡ Elements:</strong> Fire beats Nature, Water beats Fire, Electric beats Water, Nature beats Electric. Dark and Light counter each other. Use elemental matchups for 40% bonus damage!
+      </div>
+      <div class="howto-tip">
+        <strong>🎯 Goal:</strong> Clear all 15 floors and defeat the final boss. Bosses appear on floors 5, 10, and 15. Every run is different!
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CLASS SELECT ───────────────────────────────────────── -->
+  <div id="screen-class" class="screen">
+    <div class="screen-header">
+      <button class="btn btn-back" id="btn-class-back">← Back</button>
+      <h2>Choose Your Class</h2>
+      <div></div>
+    </div>
+    <div id="class-cards" class="class-cards">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+
+  <!-- ── MAIN GAME ──────────────────────────────────────────── -->
+  <div id="screen-game" class="screen">
+    <div id="game-hud" class="game-hud">
+      <div class="hud-left">
+        <span class="hud-icon">🏰</span>
+        <span>Floor <span id="hud-floor">1</span>/15</span>
+      </div>
+      <div class="hud-center">
+        <div id="hud-phase" class="hud-phase">Shop Phase</div>
+      </div>
+      <div class="hud-right">
+        <span class="hud-item">💰<span id="hud-gold">8</span></span>
+        <span class="hud-item" id="hud-lives">❤️</span>
+      </div>
+    </div>
+
+    <!-- Phase: Shop -->
+    <div id="phase-shop" class="phase">
+      <div class="shop-header">
+        <h3>🏪 Cryptid Market</h3>
+        <button class="btn btn-reroll" id="btn-reroll">🔄 Reroll</button>
+      </div>
+      <div id="shop-monsters" class="monster-row shop-row"></div>
+
+      <div class="section-label">
+        Your Team <span id="team-count" class="team-count">(0/5)</span>
+        <span class="team-hint">Drag to reorder • Front monster fights first</span>
+      </div>
+      <div id="team-display" class="monster-row team-row"></div>
+
+      <div class="shop-footer">
+        <button class="btn btn-primary btn-fight" id="btn-fight">⚔️ Start Battle!</button>
+      </div>
+    </div>
+
+    <!-- Phase: Battle -->
+    <div id="phase-battle" class="phase">
+      <div class="battle-layout">
+        <div class="battle-side">
+          <div class="battle-side-label enemy-label">⚔️ ENEMIES</div>
+          <div id="enemy-team-battle" class="battle-team"></div>
+        </div>
+        <div class="battle-center">
+          <div class="battle-vs">VS</div>
+          <div id="battle-log" class="battle-log"></div>
+          <button class="btn btn-secondary btn-skip" id="btn-skip-battle">⏩ Skip</button>
+        </div>
+        <div class="battle-side">
+          <div class="battle-side-label player-label">🛡️ YOUR TEAM</div>
+          <div id="player-team-battle" class="battle-team"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase: Draft -->
+    <div id="phase-draft" class="phase">
+      <div class="draft-header">
+        <h3>✨ Choose an Upgrade</h3>
+        <p>Pick one powerful enhancement for the rest of your run</p>
+      </div>
+      <div id="draft-cards" class="draft-cards"></div>
+    </div>
+  </div>
+
+  <!-- ── GAME OVER ──────────────────────────────────────────── -->
+  <div id="screen-gameover" class="screen">
+    <div class="end-screen">
+      <div class="end-icon shake">💀</div>
+      <h2>Defeated!</h2>
+      <p class="end-subtitle">Your cryptids were overwhelmed by the dungeon...</p>
+      <div id="gameover-stats" class="end-stats"></div>
+      <div id="gameover-essence" class="end-essence"></div>
+      <div class="end-buttons">
+        <button class="btn btn-primary" id="btn-retry">🔄 Try Again</button>
+        <button class="btn btn-secondary" id="btn-gameover-menu">🏠 Main Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VICTORY ────────────────────────────────────────────── -->
+  <div id="screen-victory" class="screen">
+    <div class="end-screen victory-screen">
+      <div class="victory-particles"></div>
+      <div class="end-icon bounce">🏆</div>
+      <h2 class="victory-title">VICTORY!</h2>
+      <p class="end-subtitle">You conquered the dungeon and defeated the Void Sovereign!</p>
+      <div id="victory-stats" class="end-stats"></div>
+      <div id="victory-essence" class="end-essence"></div>
+      <div class="end-buttons">
+        <button class="btn btn-primary" id="btn-play-again">▶ Play Again</button>
+        <button class="btn btn-secondary" id="btn-codex-from-victory">📖 Codex</button>
+        <button class="btn btn-ghost" id="btn-victory-menu">🏠 Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CODEX ──────────────────────────────────────────────── -->
+  <div id="screen-codex" class="screen">
+    <div class="screen-header">
+      <button class="btn btn-back" id="btn-codex-back">← Back</button>
+      <h2>📖 The Cryptid Codex</h2>
+      <div class="codex-essence-display">✨ <span id="codex-essence-count">0</span></div>
+    </div>
+    <div id="codex-content" class="codex-content"></div>
+  </div>
+
+  <!-- ── TOAST ──────────────────────────────────────────────── -->
+  <div id="toast-container" class="toast-container"></div>
+</div>
+
+<script src="https://sdk.crazygames.com/crazygames-sdk-v3.js" onerror="window.CrazyGames={}"></script>
+<script src="js/data.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
